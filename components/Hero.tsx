@@ -89,7 +89,7 @@ export default function Hero() {
                   `}
                 >
                   <p className="text-[9px] sm:text-[10px] text-gray-600 leading-relaxed font-light">
-                    Hi, it's all smiles here! I always hope to put a good day and top tier work.
+                    Hi, it&apos;s all smiles here! I always hope to put a good day and top tier work.
                   </p>
                   {/* Arrow */}
                   <div 
