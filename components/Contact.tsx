@@ -38,7 +38,7 @@ export default function Contact() {
           
           {/* Email */}
           <a 
-            href="mailto:albertgadi@example.com"
+            href="mailto:ajskie438@gmail.com"
             className="flex items-center space-x-4 p-4 border-b border-gray-300 hover:bg-gray-50 transition-colors group"
           >
             <div className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full group-hover:bg-gray-200 transition-colors">
