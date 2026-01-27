@@ -17,7 +17,7 @@ export default function Contact() {
         {/* Description */}
         <div className="text-center mb-12 max-w-2xl mx-auto">
           <p className="text-gray-700 text-sm leading-relaxed font-light">
-            Feel free to reach out through any of these channels. I'm always open to discussing new projects, 
+            Feel free to reach out through any of these channels. I&apos;m always open to discussing new projects, 
             creative ideas, or opportunities to be part of your vision.
           </p>
         </div>
