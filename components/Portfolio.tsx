@@ -39,7 +39,6 @@ export default function Portfolio() {
       hasImage: true,
       imageType: 'cover',
       link: 'https://darkeummusic.vercel.app/',
-      customImage: '/darkeum-preview.png',
     },
     {
       id: 4,
@@ -51,7 +50,6 @@ export default function Portfolio() {
       hasImage: true,
       imageType: 'cover',
       link: 'https://allathome-followup.vercel.app/',
-      customImage: '/allathome-preview.png',
     },
   ];
 
@@ -100,69 +98,92 @@ export default function Portfolio() {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {filteredProjects.map((project) => (
-            <div
-              key={project.id}
-              className="group relative overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
-              onClick={() => handleMobileClick(project.id)}
-            >
-              {/* Project Image */}
-              <div className="aspect-video bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200 overflow-hidden relative">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className={`w-full h-full ${project.imageType === 'contain' ? 'object-contain' : 'object-cover'}`}
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
+          {filteredProjects.map((project) => {
+            const isActive = mobileActiveCard === project.id;
 
-                {/* Mobile tap hint */}
-                {project.hasImage && (
-                  <div
-                    className={`lg:hidden absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300 ${
-                      mobileActiveCard === project.id ? 'opacity-0' : 'opacity-100'
-                    }`}
-                  >
-                    <p className="text-white text-xs font-light animate-pulse">Tap to view details</p>
-                  </div>
-                )}
-
-                {!project.hasImage && (
-                  <div
-                    className={`absolute inset-0 bg-black/60 flex flex-col items-center justify-center transition-opacity duration-500 lg:group-hover:opacity-0 lg:opacity-100 ${
-                      mobileActiveCard === project.id ? 'opacity-0' : 'opacity-100 lg:opacity-100'
-                    }`}
-                  >
-                    <p className="text-white text-sm font-light tracking-widest uppercase mb-1">Image</p>
-                    <p className="text-white text-lg font-semibold tracking-wide mb-4">Coming Soon</p>
-                    <p className="lg:hidden text-white text-xs font-light mt-4 animate-pulse">Tap to view details</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Hover/Click Overlay */}
+            return (
               <div
-                className={`absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-800/95 to-gray-700/90 flex flex-col items-center justify-center p-8 transition-all duration-500 lg:opacity-0 lg:group-hover:opacity-100 ${
-                  mobileActiveCard === project.id ? 'opacity-100' : 'opacity-0'
-                }`}
+                key={project.id}
+                className="group relative bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                style={{ isolation: 'isolate' }}
+                onClick={() => handleMobileClick(project.id)}
               >
-                <h3 className="text-2xl font-bold text-white mb-3 text-center">{project.title}</h3>
-                <div className="w-16 h-px bg-white/50 mb-4"></div>
-                <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-4 font-light">{project.tech}</p>
-                <p className="text-xs text-gray-200 text-center leading-relaxed max-w-sm font-light mb-5">{project.description}</p>
+                {/* Project Image — always rendered, never bleeds */}
+                <div className="relative w-full aspect-video overflow-hidden bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className={`w-full h-full ${project.imageType === 'contain' ? 'object-contain' : 'object-cover'}`}
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
 
-                {project.link && (
-                  <button
-                    onClick={(e) => handleLinkClick(e, project.link)}
-                    className="px-5 py-2 bg-white text-black text-xs font-semibold tracking-widest uppercase hover:bg-gray-200 transition-colors duration-200"
-                  >
-                    View Project →
-                  </button>
-                )}
+                  {/* Mobile: tap hint shown ONLY when card is not active */}
+                  {!isActive && (
+                    <div className="lg:hidden absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <p className="text-white text-xs font-light animate-pulse">Tap to view details</p>
+                    </div>
+                  )}
+                </div>
 
-                <p className="lg:hidden text-[9px] text-gray-400 mt-4 font-light animate-pulse">Tap again to close</p>
+                {/* ✅ FIXED: Overlay is BELOW the image in DOM flow on mobile */}
+                {/* Mobile: renders as normal block below image when active */}
+                {/* Desktop: absolute overlay on hover */}
+
+                {/* Desktop hover overlay — absolute, stays inside card */}
+                <div
+                  className={`
+                    hidden lg:flex
+                    absolute inset-0 z-10
+                    bg-gradient-to-t from-gray-900 via-gray-800/95 to-gray-700/90
+                    flex-col items-center justify-center p-8
+                    transition-all duration-500
+                    opacity-0 group-hover:opacity-100
+                    overflow-hidden
+                  `}
+                >
+                  <h3 className="text-2xl font-bold text-white mb-3 text-center">{project.title}</h3>
+                  <div className="w-16 h-px bg-white/50 mb-4"></div>
+                  <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-4 font-light">{project.tech}</p>
+                  <p className="text-xs text-gray-200 text-center leading-relaxed max-w-sm font-light mb-5">{project.description}</p>
+                  {project.link && (
+                    <button
+                      onClick={(e) => handleLinkClick(e, project.link)}
+                      className="px-5 py-2 bg-white text-black text-xs font-semibold tracking-widest uppercase hover:bg-gray-200 transition-colors duration-200"
+                    >
+                      View Project →
+                    </button>
+                  )}
+                </div>
+
+                {/* ✅ Mobile details panel — renders BELOW image, not overlapping */}
+                <div
+                  className={`
+                    lg:hidden
+                    bg-gray-900
+                    flex flex-col items-center justify-center
+                    px-6 py-6
+                    transition-all duration-300 ease-in-out
+                    ${isActive ? 'block' : 'hidden'}
+                  `}
+                >
+                  <h3 className="text-xl font-bold text-white mb-2 text-center">{project.title}</h3>
+                  <div className="w-12 h-px bg-white/50 mb-3"></div>
+                  <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-3 font-light text-center">{project.tech}</p>
+                  <p className="text-xs text-gray-200 text-center leading-relaxed font-light mb-4">{project.description}</p>
+                  {project.link && (
+                    <button
+                      onClick={(e) => handleLinkClick(e, project.link)}
+                      className="px-5 py-2 bg-white text-black text-xs font-semibold tracking-widest uppercase hover:bg-gray-200 transition-colors duration-200"
+                    >
+                      View Project →
+                    </button>
+                  )}
+                  <p className="text-[9px] text-gray-400 mt-3 font-light animate-pulse">Tap again to close</p>
+                </div>
+
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Bottom Message */}
