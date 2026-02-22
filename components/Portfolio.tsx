@@ -104,53 +104,55 @@ export default function Portfolio() {
             return (
               <div
                 key={project.id}
-                className="group relative overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                className="group bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
                 onClick={() => handleMobileClick(project.id)}
               >
-                {/* Project Image */}
-                <div className="relative w-full aspect-video bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200">
+                {/* ✅ Inner wrapper handles all positioning & clipping */}
+                <div className="relative w-full aspect-video overflow-hidden" style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
+                  {/* Image */}
                   <img
                     src={project.image}
                     alt={project.title}
                     className={`w-full h-full ${project.imageType === 'contain' ? 'object-contain' : 'object-cover'}`}
                     onError={(e) => { e.currentTarget.style.display = 'none'; }}
                   />
-                </div>
 
-                {/* Tap hint — mobile only, shown when not active */}
-                {!isActive && (
-                  <div className="lg:hidden absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
-                    <p className="text-white text-xs font-light animate-pulse">Tap to view details</p>
-                  </div>
-                )}
+                  {/* Background fallback */}
+                  <div className="absolute inset-0 -z-10 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200" />
 
-                {/* ✅ Overlay — absolute inset-0, clipped by parent overflow-hidden */}
-                {/* Mobile: toggled by tap | Desktop: shown on hover */}
-                <div
-                  className={`
-                    absolute inset-0 z-10
-                    bg-gradient-to-t from-gray-900 via-gray-800/95 to-gray-700/90
-                    flex flex-col items-center justify-center p-6 lg:p-8
-                    transition-all duration-500
-                    ${isActive ? 'opacity-100 visible' : 'opacity-0 invisible'}
-                    lg:opacity-0 lg:invisible lg:group-hover:opacity-100 lg:group-hover:visible
-                  `}
-                >
-                  <h3 className="text-xl lg:text-2xl font-bold text-white mb-2 lg:mb-3 text-center">{project.title}</h3>
-                  <div className="w-12 lg:w-16 h-px bg-white/50 mb-3 lg:mb-4"></div>
-                  <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-3 lg:mb-4 font-light text-center">{project.tech}</p>
-                  <p className="text-xs text-gray-200 text-center leading-relaxed max-w-sm font-light mb-4 lg:mb-5">{project.description}</p>
-                  {project.link && (
-                    <button
-                      onClick={(e) => handleLinkClick(e, project.link)}
-                      className="px-5 py-2 bg-white text-black text-xs font-semibold tracking-widest uppercase hover:bg-gray-200 transition-colors duration-200"
-                    >
-                      View Project →
-                    </button>
+                  {/* Tap hint — mobile only, shown when not active */}
+                  {!isActive && (
+                    <div className="lg:hidden absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
+                      <p className="text-white text-xs font-light animate-pulse">Tap to view details</p>
+                    </div>
                   )}
-                  <p className="lg:hidden text-[9px] text-gray-400 mt-3 font-light animate-pulse">Tap again to close</p>
-                </div>
 
+                  {/* ✅ Overlay — strictly inside aspect-video wrapper, can never bleed */}
+                  <div
+                    className={`
+                      absolute inset-0 z-10
+                      bg-gradient-to-t from-gray-900 via-gray-800/95 to-gray-700/90
+                      flex flex-col items-center justify-center p-6 lg:p-8
+                      transition-all duration-500
+                      ${isActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+                      lg:opacity-0 lg:pointer-events-none lg:group-hover:opacity-100 lg:group-hover:pointer-events-auto
+                    `}
+                  >
+                    <h3 className="text-xl lg:text-2xl font-bold text-white mb-2 lg:mb-3 text-center">{project.title}</h3>
+                    <div className="w-12 lg:w-16 h-px bg-white/50 mb-3 lg:mb-4"></div>
+                    <p className="text-[10px] text-gray-300 uppercase tracking-wider mb-3 lg:mb-4 font-light text-center">{project.tech}</p>
+                    <p className="text-xs text-gray-200 text-center leading-relaxed max-w-sm font-light mb-4 lg:mb-5">{project.description}</p>
+                    {project.link && (
+                      <button
+                        onClick={(e) => handleLinkClick(e, project.link)}
+                        className="px-5 py-2 bg-white text-black text-xs font-semibold tracking-widest uppercase hover:bg-gray-200 transition-colors duration-200"
+                      >
+                        View Project →
+                      </button>
+                    )}
+                    <p className="lg:hidden text-[9px] text-gray-400 mt-3 font-light animate-pulse">Tap again to close</p>
+                  </div>
+                </div>
               </div>
             );
           })}
